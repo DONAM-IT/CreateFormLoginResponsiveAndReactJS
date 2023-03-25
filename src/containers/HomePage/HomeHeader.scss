@@ -2,7 +2,7 @@
     height: 60px;
     // border: 1px solid red;
     width: 100%;
-    padding: 0 20px;
+    padding: 0 40px;
 
     .home-header-content {
         //height và width bao giờ cũng kế thừa hết của thằng cha
@@ -12,16 +12,17 @@
         // flex-direction: column; //muốn các thằng con trên 1 hàng dọc 
 
         .left-content {
-            width: 25%;
+            width: 20%;
             display: flex;
             align-items: center;
-            border: 1px solid green;
+            // border: 1px solid green;
 
             .header-logo {
-                background: url('../../assets/logo.svg') center center no-repeat;
                 height: 100%;
                 width: 100%;
                 cursor: pointer;
+                transform: scale(0.5, 0.5);
+                margin-left: -45px;
             }
 
             i {
@@ -32,8 +33,8 @@
         }
 
         .center-content {
-            width: 50%;
-            border: 1px solid orange;
+            width: 55%;
+            // border: 1px solid orange;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -48,16 +49,45 @@
 
         .right-content {
             width: 25%;
-            border: 1px solid gray;
+            // border: 1px solid gray;
             display: flex;
             justify-content: center;
             align-items: center;
+
+            .support {
+                padding-right: 50px;
+                display: flex;
+                align-items: center;
+                cursor: pointer;
+
+                i {
+                    font-size: 15px;
+                    margin-right: 5px;
+                }
+            }
+
+            .language-vi {
+                cursor: pointer;
+
+                &.active {
+                    color: orange;
+                }
+            }
+
+            .language-en {
+                margin: 0 10px;
+                cursor: pointer;
+
+                &.active {
+                    color: blue;
+                }
+            }
         }
     }
 }
 
 .home-header-banner {
-    background: url('../../assets/header-background.jpg');
+    background-image: url('../../assets/header-background.jpg');
     height: 485px;
     background-repeat: no-repeat;
     background-size: cover;
@@ -66,8 +96,9 @@
     flex-direction: column;
 
     .content-up {
-        border: 1px solid red;
-        height: 50%;
+        background-image: linear-gradient(rgba(0, 0, 0, 0.25), rgba(255, 255, 255, 0.1));
+        // border: 1px solid red;
+        height: 65%;
         padding-top: 15px;
 
         .title1 {
@@ -94,8 +125,7 @@
             justify-content: center;
             margin: 0 auto;
             align-items: center;
-            padding: 14px;
-
+            padding: 10px;
             border-radius: 25px;
             background: #f7d800;
 
@@ -114,8 +144,13 @@
     }
 
     .content-down {
-        border: 1px solid green;
-        height: 50%;
+        // border: 1px solid green;
+        height: 35%;
+
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        background-image: linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 1));
 
         .options {
 
@@ -125,7 +160,7 @@
             justify-content: center;
 
             .options-child {
-                border: 1px solid red;
+                // border: 1px solid red;
                 width: 100px;
 
                 .icon-child {
