@@ -3,6 +3,10 @@
     // border: 1px solid red;
     width: 100%;
     padding: 0 40px;
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 10000;
 
     .home-header-content {
         //height và width bao giờ cũng kế thừa hết của thằng cha
