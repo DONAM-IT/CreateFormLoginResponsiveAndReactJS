@@ -3,8 +3,8 @@ import { connect } from "react-redux";
 import "./HomeHeader.scss";
 import logo from "../../assets/logo.svg";
 import { FormattedMessage } from "react-intl";
-import { LANGUAGES} from "../../utils"
-import { changeLanguageApp } from "../../store/actions"
+import { LANGUAGES } from "../../utils";
+import { changeLanguageApp } from "../../store/actions";
 
 class HomeHeader extends Component {
   changeLanguage = (language) => {
@@ -14,9 +14,7 @@ class HomeHeader extends Component {
   };
 
   render() {
-    console.log("check props: ", this.props);
     let language = this.props.language;
-    console.log("check language: ", language);
     return (
       <React.Fragment>
         <div className="home-header-container">
@@ -172,6 +170,7 @@ const mapStateToProps = (state) => {
   return {
     isLoggedIn: state.user.isLoggedIn,
     language: state.app.language,
+    userInfo: state.user.userInfo,
   };
 };
 
