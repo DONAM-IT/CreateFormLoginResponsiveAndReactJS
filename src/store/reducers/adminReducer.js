@@ -28,7 +28,7 @@ const adminReducer = (state = initialState, action) => {
         ...state,
       };
 
-    case actionTypes.FETCH_GENDER_FAIDED:
+    case actionTypes.FETCH_GENDER_FAILDED:
       // console.log("hoi dan it fire fetch gender failed: ", action);
       state.isLoadingGender = false;
       state.genders = [];
@@ -43,7 +43,7 @@ const adminReducer = (state = initialState, action) => {
         ...state,
       };
 
-    case actionTypes.FETCH_POSITION_FAIDED:
+    case actionTypes.FETCH_POSITION_FAILDED:
       state.positions = [];
       return {
         ...state,
@@ -55,7 +55,7 @@ const adminReducer = (state = initialState, action) => {
         ...state,
       };
 
-    case actionTypes.FETCH_POSITION_FAIDED:
+    case actionTypes.FETCH_POSITION_FAILDED:
       state.roles = [];
       return {
         ...state,

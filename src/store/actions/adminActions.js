@@ -1,5 +1,8 @@
 import actionTypes from "./actionTypes";
-import { getAllCodeService } from "../../services/userService";
+import {
+  getAllCodeService,
+  createNewUserService,
+} from "../../services/userService";
 
 //return 1 acction
 // export const fetchGenderStart = () => ({
@@ -34,7 +37,7 @@ export const fetchGenderSuccess = (genderData) => ({
   data: genderData,
 });
 export const fetchGenderFailed = () => ({
-  type: actionTypes.FETCH_GENDER_FAIDED,
+  type: actionTypes.FETCH_GENDER_FAILDED,
 });
 
 //get chức vụ thành công (lấy data) truyền sang cho redux
@@ -43,7 +46,7 @@ export const fetchPositionSuccess = (positionData) => ({
   data: positionData,
 });
 export const fetchPositionFailed = () => ({
-  type: actionTypes.FETCH_POSITION_FAIDED,
+  type: actionTypes.FETCH_POSITION_FAILDED,
 });
 
 export const fetchRoleSuccess = (roleData) => ({
@@ -51,7 +54,7 @@ export const fetchRoleSuccess = (roleData) => ({
   data: roleData,
 });
 export const fetchRoleFailed = (roleData) => ({
-  type: actionTypes.FETCH_ROLE_FAIDED,
+  type: actionTypes.FETCH_ROLE_FAILDED,
 });
 
 export const fetchPositionStart = () => {
@@ -87,4 +90,30 @@ export const fetchRoleStart = () => {
     }
   };
 };
+//FIRE ACTION
+export const createNewUser = (data) => {
+  return async (dispatch, getState) => {
+    try {
+      let res = await createNewUserService(data);
+      console.log("hoidanit check create user redux: ", res);
+      if (res && res.errCode === 0) {
+        // console.log("hoidanit check get state: ", getState);
+        dispatch(saveUserSuccess()); // fire action fetchGenderSuccess
+      } else {
+        dispatch(saveUserFailed());
+      }
+    } catch (e) {
+      dispatch(saveUserFailed());
+      console.log("saveUserFailed error", e);
+    }
+  };
+};
+
+export const saveUserSuccess = () => ({
+  type: "CREATE_USER_SUCCESS",
+});
+
+export const saveUserFailed = () => ({
+  type: "CREATE_USER_FAILDED",
+});
 //start doing end
