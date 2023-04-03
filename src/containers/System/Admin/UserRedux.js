@@ -6,6 +6,7 @@ import * as actions from "../../../store/actions";
 import "./UserRedux.scss";
 import Lightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css";
+import TableManageUser from "./TableManageUser";
 
 class UserRedux extends Component {
   constructor(props) {
@@ -65,6 +66,21 @@ class UserRedux extends Component {
           arrPositions && arrPositions.length > 0 ? arrPositions[0].key : "",
       });
     }
+
+    if (prevProps.listUsers !== this.props.listUsers) {
+      this.setState({
+        email: "",
+        password: "",
+        firstName: "",
+        lastName: "",
+        phoneNumber: "",
+        address: "",
+        gender: "",
+        position: "",
+        role: "",
+        avatar: "",
+      });
+    }
   }
 
   handleOnchangeImage = (event) => {
@@ -106,6 +122,10 @@ class UserRedux extends Component {
       positionId: this.state.position,
     });
     // console.log("hoidanit before submit check state: ", this.state);
+
+    // setTimeout(() => {
+    //   this.props.fetchUserRedux();
+    // }, 1000);
   };
 
   checkValidateInput = () => {
@@ -148,7 +168,7 @@ class UserRedux extends Component {
     // console.log("hoidanit check state: ", this.state);
     let genders = this.state.genderArr;
     let roles = this.state.roleArr;
-    console.log("hoidanit check roles ", roles);
+    // console.log("hoidanit check roles ", roles);
     let positions = this.state.positionArr;
     let language = this.props.language; //this.props ko phải kiểu cha truyền sang con mà lấy từ redux sang react
     let isGetGenders = this.props.isLoadingGender;
@@ -351,13 +371,16 @@ class UserRedux extends Component {
                   ></div>
                 </div>
               </div>
-              <div className="col-12 mt-3">
+              <div className="col-12 my-3">
                 <button
                   className="btn btn-primary"
                   onClick={() => this.handleSaveUser()}
                 >
                   <FormattedMessage id="manage-user.save" />
                 </button>
+              </div>
+              <div className="col-12 mb-5">
+                <TableManageUser />
               </div>
             </div>
           </div>
@@ -381,6 +404,7 @@ const mapStateToProps = (state) => {
     roleRedux: state.admin.roles,
     positionRedux: state.admin.positions,
     isLoadingGender: state.admin.isLoadingGender,
+    listUsers: state.admin.users,
   };
 };
 
@@ -393,6 +417,8 @@ const mapDispatchToProps = (dispatch) => {
     getRoleStart: () => dispatch(actions.fetchRoleStart()),
 
     createNewUser: (data) => dispatch(actions.createNewUser(data)),
+
+    fetchUserRedux: () => dispatch(actions.fetchAllUsersStart()), //fire action
     //  processLogout: () => dispatch(actions.processLogout()),
     // changeLanguageAppRedux: (language) =>
     //   dispatch(actions.changeLanguageApp(language)),

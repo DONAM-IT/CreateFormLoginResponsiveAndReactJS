@@ -6,6 +6,7 @@ const initialState = {
   genders: [],
   roles: [],
   positions: [],
+  users: [],
 };
 
 const adminReducer = (state = initialState, action) => {
@@ -60,7 +61,18 @@ const adminReducer = (state = initialState, action) => {
       return {
         ...state,
       };
+    //viết switch để lưu vào redux
+    case actionTypes.FETCH_ALL_USERS_SUCCESS:
+      state.users = action.users; //action.users là biến users lấy từ bên file adminAction.js có hàm fetchAllUsersSuccess truyền qua
+      return {
+        ...state,
+      };
 
+    case actionTypes.FETCH_ALL_USERS_FAILDED:
+      state.users = []; //action.users là biến users lấy từ bên file adminAction.js có hàm fetchAllUsersSuccess truyền qua
+      return {
+        ...state,
+      };
     default:
       return state;
   }

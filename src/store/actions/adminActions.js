@@ -2,8 +2,10 @@ import actionTypes from "./actionTypes";
 import {
   getAllCodeService,
   createNewUserService,
+  getAllUsers,
+  deleteUserService,
 } from "../../services/userService";
-
+import { toast } from "react-toastify";
 //return 1 acction
 // export const fetchGenderStart = () => ({
 //   type: actionTypes.FETCH_GENDER_START,
@@ -97,8 +99,9 @@ export const createNewUser = (data) => {
       let res = await createNewUserService(data);
       console.log("hoidanit check create user redux: ", res);
       if (res && res.errCode === 0) {
-        // console.log("hoidanit check get state: ", getState);
+        toast.success("Create a new user succeed!!");
         dispatch(saveUserSuccess()); // fire action fetchGenderSuccess
+        dispatch(fetchAllUsersStart());
       } else {
         dispatch(saveUserFailed());
       }
@@ -110,10 +113,69 @@ export const createNewUser = (data) => {
 };
 
 export const saveUserSuccess = () => ({
-  type: "CREATE_USER_SUCCESS",
+  type: actionTypes.CREATE_USER_SUCCESS,
 });
 
 export const saveUserFailed = () => ({
-  type: "CREATE_USER_FAILDED",
+  type: actionTypes.CREATE_USER_FAILDED,
 });
 //start doing end
+
+export const fetchAllUsersStart = () => {
+  return async (dispatch, getState) => {
+    try {
+      let res = await getAllUsers("ALL");
+      if (res && res.errCode === 0) {
+        // console.log("hoidanit check get state: ", getState);
+        //js array reverse (javascript)
+        dispatch(fetchAllUsersSuccess(res.users.reverse())); // fire action fetchGenderSuccess// res.users vì res trả về tên biến users ở tab network
+      } else {
+        toast.error("Fetch all users error!");
+        dispatch(fetchAllUsersFailed());
+      }
+    } catch (e) {
+      toast.error("Fetch all users error!");
+      dispatch(fetchAllUsersFailed());
+      console.log("fetchAllUsersFailed error", e);
+    }
+  };
+};
+
+export const fetchAllUsersSuccess = (data) => ({
+  type: actionTypes.FETCH_ALL_USERS_SUCCESS,
+  users: data, //truyền 1 đi 1 cái biến có key là users và giá trị của nó là data
+});
+
+export const fetchAllUsersFailed = () => ({
+  type: actionTypes.FETCH_ALL_USERS_FAILDED, //xảy ra khi kết nối server, api trả về bị faild
+});
+
+export const deleteAUser = (userId) => {
+  return async (dispatch, getState) => {
+    try {
+      let res = await deleteUserService(userId);
+      console.log("hoidanit check create user redux: ", res);
+      if (res && res.errCode === 0) {
+        toast.success("Delete the user succeed!!");
+        dispatch(deleteUserSuccess()); // fire action fetchGenderSuccess
+        dispatch(fetchAllUsersStart()); //XÓA NGƯỜI DÙNG XONG CẦN LOAD LẠI NGƯỜI DÙNG
+      } else {
+        toast.error("Delete the user error!");
+        dispatch(saveUserFailed());
+      }
+    } catch (e) {
+      toast.error("Delete the user error!");
+      dispatch(deleteUserFailed());
+      console.log("deleteUserFailed error", e);
+    }
+  };
+};
+
+//chính 1 cái action, sau này muốn xử lý action này thì tùy
+export const deleteUserSuccess = () => ({
+  type: actionTypes.DELETE_USER_SUCCESS,
+});
+
+export const deleteUserFailed = () => ({
+  type: actionTypes.DELETE_USER_FAILDED,
+});
