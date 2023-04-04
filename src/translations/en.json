@@ -9,7 +9,7 @@
         "fee": "Checkup package",
         "check-health": "General health check",
         "support": "Support",
-       "welcome": "Welcome, "
+        "welcome": "Welcome, "
     },
     "banner": {
         "title1": "MEDICAL BACKGROUND",
@@ -48,6 +48,7 @@
         "position": "Position",
         "role": "Role",
         "image": "Avatar",
-        "save": "Save user"
+        "save": "Save user",
+        "edit": "Edit user"
     }
 }

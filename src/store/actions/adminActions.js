@@ -4,6 +4,7 @@ import {
   createNewUserService,
   getAllUsers,
   deleteUserService,
+  editUserService,
 } from "../../services/userService";
 import { toast } from "react-toastify";
 //return 1 acction
@@ -178,4 +179,32 @@ export const deleteUserSuccess = () => ({
 
 export const deleteUserFailed = () => ({
   type: actionTypes.DELETE_USER_FAILDED,
+});
+
+export const editAUser = (data) => {
+  return async (dispatch, getState) => {
+    try {
+      let res = await editUserService(data);
+      if (res && res.errCode === 0) {
+        toast.success("Update the user succeed!!");
+        dispatch(editUserSuccess()); // fire action fetchGenderSuccess
+        dispatch(fetchAllUsersStart()); //XÓA NGƯỜI DÙNG XONG CẦN LOAD LẠI NGƯỜI DÙNG
+      } else {
+        toast.error("Update the user error!");
+        dispatch(editUserFailed());
+      }
+    } catch (e) {
+      toast.error("Update the user error!");
+      dispatch(editUserFailed());
+      console.log("EditUserFailed error", e);
+    }
+  };
+};
+
+export const editUserSuccess = () => ({
+  type: actionTypes.EDIT_USER_SUCCESS,
+});
+
+export const editUserFailed = () => ({
+  type: actionTypes.EDIT_USER_FAILDED,
 });

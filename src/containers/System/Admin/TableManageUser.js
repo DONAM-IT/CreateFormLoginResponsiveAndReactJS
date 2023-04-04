@@ -27,6 +27,13 @@ class TableManageUser extends Component {
     // console.log("hoidanit delete the user: ", user);
     this.props.deleteAUserRedux(user.id); //dùng redux fire action, gọi đến tên fuction , fire action xóa người dùng bên file action
   };
+  //đặt 1 cái action fire lên thằng cha
+  handleEditUser = (user) => {
+    //truyền dữ liệu từ thằng con sang thằng cha
+    //cách này dùng khi và chỉ khi thằng con muốn gọi 1 hàm bên trên thằng cha
+    // this.props.handleEditUserFromParentKey("data from child");
+    this.props.handleEditUserFromParentKey(user);
+  };
   render() {
     console.log("hoidanit check all users: ", this.props.listUsers);
     console.log("hoidanit check state: ", this.state.usersRedux);
@@ -51,7 +58,10 @@ class TableManageUser extends Component {
                   <td>{item.lastName}</td>
                   <td>{item.address}</td>
                   <td>
-                    <button className="btn-edit">
+                    <button
+                      onClick={() => this.handleEditUser(item)}
+                      className="btn-edit"
+                    >
                       <i className="fas fa-pencil-alt"></i>
                     </button>
                     <button
