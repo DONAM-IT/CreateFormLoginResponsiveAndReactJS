@@ -3,23 +3,48 @@ import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
 import "./TableManageUser.scss";
 import * as actions from "../../../store/actions";
+import Pagination from "./Pagination";
+
 class TableManageUser extends Component {
   constructor(props) {
     super(props);
     this.state = {
       //đây là cái mảng hứng giá trị từ con redux về
       usersRedux: [],
+      doctorReduxTemp: [],
+      number: 0,
+      length: 0,
+      count: 0,
+      // limit: 2,
     };
   }
   componentDidMount() {
-    this.props.fetchUserRedux();
+    // const { pageKey, limitKey } = this.props;
+    // this.props.getPostsLimitRedux(0); //0 là trang 1 vì index+ 1 (0+1)
+    // this.props.fetchUserRedux();
   }
+  handleChanePageFromParent = (number) => {
+    const { limit, getAllDoctorsStartRedux } = this.props;
+    getAllDoctorsStartRedux(number, limit);
+  };
   //chạy sau khi hàm reder xảy ra
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevProps.listUsers !== this.props.listUsers) {
+    // if (prevProps.listUsers !== this.props.listUsers) {
+    //   //gán giá trị vào userRedux, this.setState bắt component render lại, ngay lập tức lấy được giá trị thôi
+    //   this.setState({
+    //     usersRedux: this.props.listUsers,
+    //   });
+    // }
+    // if (prevProps.postsRedux !== this.props.postsRedux) {
+    //   //gán giá trị vào userRedux, this.setState bắt component render lại, ngay lập tức lấy được giá trị thôi
+    //   this.setState({
+    //     usersRedux: this.props.postsRedux,
+    //   });
+    // }
+    if (prevProps.doctorsRedux !== this.props.doctorsRedux) {
       //gán giá trị vào userRedux, this.setState bắt component render lại, ngay lập tức lấy được giá trị thôi
       this.setState({
-        usersRedux: this.props.listUsers,
+        doctorReduxTemp: this.props.doctorsRedux,
       });
     }
   }
@@ -35,9 +60,17 @@ class TableManageUser extends Component {
     this.props.handleEditUserFromParentKey(user);
   };
   render() {
-    console.log("hoidanit check all users: ", this.props.listUsers);
+    console.log("hoidanit check all users: ", this.props.doctorsRedux);
     console.log("hoidanit check state: ", this.state.usersRedux);
-    let arrUsers = this.state.usersRedux;
+
+    // let arrUsers = this.state.usersRedux;
+    // let count = this.props.countRedux;
+    // let posts = this.props.postsRedux;
+    let arrUsers = this.props.doctorsRedux;
+    console.log("HELLO arrUsers", arrUsers);
+    let count = this.props.countRedux;
+
+    // console.log("Hoidanit check count by getPostsLimitRedux voi gia tri posta va posta: ", counta, posta.length);
     return (
       <table id="TableManageUser">
         <tbody>
@@ -75,6 +108,13 @@ class TableManageUser extends Component {
               );
             })}
         </tbody>
+        <Pagination
+          pageKey={this.props.pageKey}
+          limitKey={this.props.limitKey}
+          location={this.props.location}
+          history={this.props.history}
+          params={this.props.params}
+        />
       </table>
     );
   }
@@ -84,6 +124,11 @@ const mapStateToProps = (state) => {
   return {
     //hứng kết quả
     listUsers: state.admin.users, //state.admin.users , admin là adminRedux lấy biến trong users ra, tức là giá trị nó lấy trong state redux của adminRedux
+    postsRedux: state.admin.posts, //là danh sách limit trả về số dòng
+    countRedux: state.admin.count, //tổng số record có trong db
+    doctorsRedux: state.admin.doctors,
+    totalRedux: state.admin.total,
+    countRedux: state.admin.count,
   };
 };
 
@@ -91,6 +136,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     fetchUserRedux: () => dispatch(actions.fetchAllUsersStart()), //fire action
     deleteAUserRedux: (id) => dispatch(actions.deleteAUser(id)),
+    getPostsLimitRedux: (page) => dispatch(actions.getPostsLimit(page)),
+    getAllDoctorsStartRedux: (page, limit) =>
+      dispatch(actions.getAllDoctorsStart(page, limit)),
   };
 };
 

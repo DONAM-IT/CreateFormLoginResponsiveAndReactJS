@@ -33,6 +33,14 @@ const getAllCodeService = (inputType) => {
   return axios.get(`/api/allcode?type=${inputType}`);
 };
 
+const getGetPostsLimitService = (page) => {
+  return axios.get(`/api/v1/post/limit?page=${page}`);
+};
+
+const getDoctorsByPage = (page, limit) => {
+  return axios.get(`/api/v1/doctors/?limit=${limit}&page=${page}`);
+};
+
 export {
   handleLoginApi,
   getAllUsers,
@@ -40,4 +48,6 @@ export {
   deleteUserService,
   editUserService,
   getAllCodeService,
+  getDoctorsByPage,
+  getGetPostsLimitService,
 };

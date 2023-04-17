@@ -5,6 +5,8 @@ import {
   getAllUsers,
   deleteUserService,
   editUserService,
+  getDoctorsByPage,
+  getGetPostsLimitService,
 } from "../../services/userService";
 import { toast } from "react-toastify";
 //return 1 acction
@@ -207,4 +209,61 @@ export const editUserSuccess = () => ({
 
 export const editUserFailed = () => ({
   type: actionTypes.EDIT_USER_FAILDED,
+});
+
+export const getAllDoctorsStart = (page, limit) => {
+  return async (dispatch, getState) => {
+    try {
+      let res = await getDoctorsByPage(page, limit);
+      if (res && res.err === 0) {
+        //js array reverse (javascript)
+        console.log("FASFASF", res.doctorData);
+        dispatch(getDoctorsSuccess(res.doctorData)); // fire action fetchGenderSuccess// res.users vì res trả về tên biến users ở tab network
+      } else {
+        toast.error("Fetch all doctors error!");
+        dispatch(getDoctorsFail());
+      }
+    } catch (e) {
+      toast.error("Fetch all doctors error!");
+      dispatch(getDoctorsFail());
+      console.log("getDoctorsFail error", e);
+    }
+  };
+};
+
+export const getDoctorsSuccess = (data) => ({
+  type: actionTypes.GET_ALL_DOCTORS_SUCCESS,
+  doctors: data?.rows, //truyền 1 đi 1 cái biến có key là users và giá trị của nó là data
+  count: data?.count,
+  total: data?.rows.length,
+});
+
+export const getDoctorsFail = () => ({
+  type: actionTypes.GET_ALL_DOCTORS_FAILDED, //xảy ra khi kết nối server, api trả về bị faild
+});
+
+export const getPostsLimit = (page) => {
+  return async (dispatch, getState) => {
+    try {
+      let res = await getGetPostsLimitService(page);
+      if (res && res.errCode === 0) {
+        // console.log("check post", res.data);
+        dispatch(getPostsLimitSuccess(res.data));
+      } else {
+        dispatch(getPostsLimitFailed());
+      }
+    } catch (e) {
+      dispatch(getPostsLimitFailed());
+      console.log("getPostsLimitFailed error", e);
+    }
+  };
+};
+
+export const getPostsLimitSuccess = (data) => ({
+  type: actionTypes.GET_POSTS_LIMIT_SUCCESS,
+  posts: data?.rows,
+  count: data?.count,
+});
+export const getPostsLimitFailed = () => ({
+  type: actionTypes.GET_POSTS_LIMIT_FAILDED,
 });

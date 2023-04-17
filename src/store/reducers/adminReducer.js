@@ -7,6 +7,9 @@ const initialState = {
   roles: [],
   positions: [],
   users: [],
+  doctors: [],
+  count: 0,
+  posts: [],
 };
 
 const adminReducer = (state = initialState, action) => {
@@ -70,6 +73,43 @@ const adminReducer = (state = initialState, action) => {
 
     case actionTypes.FETCH_ALL_USERS_FAILDED:
       state.users = []; //action.users là biến users lấy từ bên file adminAction.js có hàm fetchAllUsersSuccess truyền qua
+      return {
+        ...state,
+      };
+    case actionTypes.GET_ALL_USERS_SUCCESS:
+      state.users = action.users; //action.users là biến users lấy từ bên file adminAction.js có hàm fetchAllUsersSuccess truyền qua
+      return {
+        ...state,
+      };
+
+    case actionTypes.GET_ALL_USERS_FAILDED:
+      state.users = []; //action.users là biến users lấy từ bên file adminAction.js có hàm fetchAllUsersSuccess truyền qua
+      return {
+        ...state,
+      };
+    case actionTypes.GET_ALL_DOCTORS_SUCCESS:
+      state.doctors = action.doctors; //action.users là biến users lấy từ bên file adminAction.js có hàm fetchAllUsersSuccess truyền qua
+      state.count = action.count || 0;
+      state.total = action.total;
+      return {
+        ...state,
+      };
+
+    case actionTypes.GET_ALL_DOCTORS_FAILDED:
+      state.doctors = []; //action.users là biến users lấy từ bên file adminAction.js có hàm fetchAllUsersSuccess truyền qua
+      return {
+        ...state,
+      };
+    case actionTypes.GET_POSTS_LIMIT_SUCCESS:
+      state.count = action.count || 0; //action.users là biến users lấy từ bên file adminAction.js có hàm fetchAllUsersSuccess truyền qua
+      state.posts = action.posts;
+      return {
+        ...state,
+      };
+
+    case actionTypes.GET_POSTS_LIMIT_FAILDED:
+      state.count = [];
+      state.posts = [];
       return {
         ...state,
       };
