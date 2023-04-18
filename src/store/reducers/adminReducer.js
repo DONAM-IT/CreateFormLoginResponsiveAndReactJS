@@ -7,6 +7,7 @@ const initialState = {
   roles: [],
   positions: [],
   users: [],
+  topDotors: [],
 };
 
 const adminReducer = (state = initialState, action) => {
@@ -70,6 +71,16 @@ const adminReducer = (state = initialState, action) => {
 
     case actionTypes.FETCH_ALL_USERS_FAILDED:
       state.users = []; //action.users là biến users lấy từ bên file adminAction.js có hàm fetchAllUsersSuccess truyền qua
+      return {
+        ...state,
+      };
+    case actionTypes.FETCH_TOP_DOCTORS_SUCCESS:
+      state.topDotors = action.dataDoctors; //gán giá trị của biến dataDoctors cho redux
+      return {
+        ...state,
+      };
+    case actionTypes.FETCH_TOP_DOCTORS_FAILDED:
+      state.topDotors = [];
       return {
         ...state,
       };
