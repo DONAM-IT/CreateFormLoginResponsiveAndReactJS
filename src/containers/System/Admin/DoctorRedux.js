@@ -103,7 +103,7 @@ class DoctorRedux extends Component {
       let arrGenders = this.props.genderRedux;
       this.setState({
         genderArr: arrGenders,
-        gender: arrGenders && arrGenders.length > 0 ? arrGenders[0].key : "",
+        gender: arrGenders && arrGenders.length > 0 ? arrGenders[0].keyMap : "",
       });
     }
 
@@ -111,7 +111,7 @@ class DoctorRedux extends Component {
       let arrRoles = this.props.roleRedux;
       this.setState({
         roleArr: arrRoles,
-        role: arrRoles && arrRoles.length > 0 ? arrRoles[0].key : "",
+        role: arrRoles && arrRoles.length > 0 ? arrRoles[0].keyMap : "",
       });
     }
 
@@ -120,7 +120,7 @@ class DoctorRedux extends Component {
       this.setState({
         positionArr: arrPositions,
         position:
-          arrPositions && arrPositions.length > 0 ? arrPositions[0].key : "",
+          arrPositions && arrPositions.length > 0 ? arrPositions[0].keyMap : "",
       });
     }
     //khi có sự thay đổi của người dùng ta set lại giá trị
@@ -128,7 +128,7 @@ class DoctorRedux extends Component {
       let arrGenders = this.props.genderRedux;
       let arrRoles = this.props.roleRedux;
       let arrPositions = this.props.positionRedux;
-
+      emitter.emit("EVENT_UPDATE_TABLE");
       this.setState(
         {
           email: "",
@@ -137,18 +137,21 @@ class DoctorRedux extends Component {
           lastName: "",
           phoneNumber: "",
           address: "",
-          gender: arrGenders && arrGenders.length > 0 ? arrGenders[0].key : "",
-          role: arrRoles && arrRoles.length > 0 ? arrRoles[0].key : "",
+          gender:
+            arrGenders && arrGenders.length > 0 ? arrGenders[0].keyMap : "",
+          role: arrRoles && arrRoles.length > 0 ? arrRoles[0].keyMap : "",
           position:
-            arrPositions && arrPositions.length > 0 ? arrPositions[0].key : "",
+            arrPositions && arrPositions.length > 0
+              ? arrPositions[0].keyMap
+              : "",
           avatar: "",
+
           action: CRUD_ACTIONS.CREATE,
           previewImgURL: "",
+        },
+        () => {
+          console.log("EVENT_UPDATE_TABLE ", this.state);
         }
-        // ,
-        // () => {
-        //   console.log("hoidanit callback check state ", this.state);
-        // }
       );
     }
     // if (prevProps.doctorsRedux !== this.props.doctorsRedux) {
@@ -164,10 +167,10 @@ class DoctorRedux extends Component {
     //       lastName: "",
     //       phoneNumber: "",
     //       address: "",
-    //       gender: arrGenders && arrGenders.length > 0 ? arrGenders[0].key : "",
-    //       role: arrRoles && arrRoles.length > 0 ? arrRoles[0].key : "",
+    //       gender: arrGenders && arrGenders.length > 0 ? arrGenders[0].keyMap : "",
+    //       role: arrRoles && arrRoles.length > 0 ? arrRoles[0].keyMap : "",
     //       position:
-    //         arrPositions && arrPositions.length > 0 ? arrPositions[0].key : "",
+    //         arrPositions && arrPositions.length > 0 ? arrPositions[0].keyMap : "",
     //       avatar: "",
     //       action: CRUD_ACTIONS.CREATE,
     //       previewImgURL: "",
@@ -461,7 +464,7 @@ class DoctorRedux extends Component {
                     genders.length > 0 &&
                     genders.map((item, index) => {
                       return (
-                        <option key={index} value={item.key}>
+                        <option key={index} value={item.keyMap}>
                           {language === LANGUAGES.VI
                             ? item.valueVi
                             : item.valueEn}
@@ -485,7 +488,7 @@ class DoctorRedux extends Component {
                     positions.length > 0 &&
                     positions.map((item, index) => {
                       return (
-                        <option key={index} value={item.key}>
+                        <option key={index} value={item.keyMap}>
                           {language === LANGUAGES.VI
                             ? item.valueVi
                             : item.valueEn}
@@ -509,7 +512,7 @@ class DoctorRedux extends Component {
                     roles.length > 0 &&
                     roles.map((item, index) => {
                       return (
-                        <option key={index} value={item.key}>
+                        <option key={index} value={item.keyMap}>
                           {language === LANGUAGES.VI
                             ? item.valueVi
                             : item.valueEn}

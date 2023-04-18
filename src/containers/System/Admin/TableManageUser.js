@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import "./TableManageUser.scss";
 import * as actions from "../../../store/actions";
 import Pagination from "./Pagination";
+import { emitter } from "../../../utils/emitter";
 
 class TableManageUser extends Component {
   constructor(props) {
@@ -17,7 +18,19 @@ class TableManageUser extends Component {
       count: 0,
       // limit: 2,
     };
+    this.listenToEmitter();
   }
+  listenToEmitter() {
+    emitter.on("EVENT_UPDATE_TABLE", () => {
+      const result = this.props.getAllDoctorsStartRedux(
+        this.props.pageKey,
+        this.props.limitKey
+      );
+      this.setState({
+        doctorReduxTemp: result,
+      });
+    });
+  } //bus event
   componentDidMount() {
     // const { pageKey, limitKey } = this.props;
     // this.props.getPostsLimitRedux(0); //0 là trang 1 vì index+ 1 (0+1)
@@ -38,7 +51,7 @@ class TableManageUser extends Component {
     // if (prevProps.postsRedux !== this.props.postsRedux) {
     //   //gán giá trị vào userRedux, this.setState bắt component render lại, ngay lập tức lấy được giá trị thôi
     //   this.setState({
-    //     usersRedux: this.props.postsRedux,
+    //     doctorReduxTemp: this.props.postsRedux,
     //   });
     // }
     if (prevProps.doctorsRedux !== this.props.doctorsRedux) {
@@ -66,7 +79,7 @@ class TableManageUser extends Component {
     // let arrUsers = this.state.usersRedux;
     // let count = this.props.countRedux;
     // let posts = this.props.postsRedux;
-    let arrUsers = this.props.doctorsRedux;
+    let arrUsers = this.state.doctorReduxTemp;
     console.log("HELLO arrUsers", arrUsers);
     let count = this.props.countRedux;
 
