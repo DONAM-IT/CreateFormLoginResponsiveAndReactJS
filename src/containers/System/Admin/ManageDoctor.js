@@ -10,12 +10,13 @@ import MdEditor from "react-markdown-editor-lite";
 // import style manually
 import "react-markdown-editor-lite/lib/index.css";
 import Select from "react-select";
+import { LANGUAGES } from "../../../utils";
 
-const options = [
-  { value: "chocolate", label: "Chocolate" },
-  { value: "strawberry", label: "Strawberry" },
-  { value: "vanilla", label: "Vanilla" },
-];
+// const listDoctors = [
+//   { value: "chocolate", label: "Chocolate" },
+//   { value: "strawberry", label: "Strawberry" },
+//   { value: "vanilla", label: "Vanilla" },
+// ];
 
 const mdParser = new MarkdownIt(/* Markdown-it options */);
 class ManageDoctor extends Component {
@@ -24,13 +25,48 @@ class ManageDoctor extends Component {
     this.state = {
       contentMarkdown: "",
       contentHTML: "",
-      selectedDoctor: "",
+      selectedOption: "",
       description: "",
+      listDoctors: [],
     };
   }
-  componentDidMount() {}
+  componentDidMount() {
+    this.props.fetchAllDoctors();
+  }
+
+  buildDataInputSelect = (inputData) => {
+    let result = [];
+    let { language } = this.props;
+    if (inputData && inputData.length > 0) {
+      inputData.map((item, index) => {
+        let object = {};
+        let labelVi = `${item.lastName} ${item.firstName}`;
+        let labelEn = `${item.firstName} ${item.lastName}`;
+        object.label = language === LANGUAGES.VI ? labelVi : labelEn;
+        object.value = item.id;
+        result.push(object); // object gồm key là label và value đẩy vô mảng result
+      });
+    }
+
+    return result;
+  };
+
   //chạy sau khi hàm reder xảy ra
-  componentDidUpdate(prevProps, prevState, snapshot) {}
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (prevProps.allDoctors !== this.props.allDoctors) {
+      let dataSelect = this.buildDataInputSelect(this.props.allDoctors);
+      this.setState({
+        listDoctors: dataSelect,
+      });
+    }
+    //nếu ngôn ngữ thay đổi
+    if (prevProps.language !== this.props.language) {
+      let dataSelect = this.buildDataInputSelect(this.props.allDoctors);
+      this.setState({
+        listDoctors: dataSelect,
+      });
+    }
+  }
   handleDeleteUser = (user) => {
     // console.log("hoidanit delete the user: ", user);
     this.props.deleteAUserRedux(user.id); //dùng redux fire action, gọi đến tên fuction , fire action xóa người dùng bên file action
@@ -54,11 +90,17 @@ class ManageDoctor extends Component {
 
   handleSaveContentMarkdown = () => {
     // alert("click me");
+    this.props.saveDetailDoctor({
+      contentHTML: this.state.contentHTML,
+      contentMarkdown: this.state.contentMarkdown,
+      description: this.state.description,
+      doctorId: this.state.selectedOption.value,
+    });
     console.log("hoidanit check status", this.state);
   };
-  handleChange = (selectedDoctor) => {
-    this.setState({ selectedDoctor }, () =>
-      console.log(`Option selected:`, this.state.selectedDoctor)
+  handleChange = (selectedOption) => {
+    this.setState({ selectedOption }, () =>
+      console.log(`Option selected:`, this.state.selectedOption)
     );
   };
 
@@ -68,6 +110,7 @@ class ManageDoctor extends Component {
     });
   };
   render() {
+    console.log("hoidanitChannel: ", this.state);
     return (
       <div className="manage-doctor-container">
         <div className="manage-doctor-title">Tạo thêm thông tin doctors</div>
@@ -75,13 +118,13 @@ class ManageDoctor extends Component {
           <div className="content-left form-group">
             <label>Chọn bác sĩ</label>
             <Select
-              value={this.state.selectedDoctor}
+              value={this.state.selectedOption}
               onChange={this.handleChange}
-              options={options}
+              options={this.state.listDoctors}
             />
           </div>
           <div className="content-right">
-            <label>Thông tin giới thiệu</label>
+            <label>Thông tin giới thiệu:</label>
             <textarea
               className="form-control"
               rows="4"
@@ -115,15 +158,16 @@ class ManageDoctor extends Component {
 
 const mapStateToProps = (state) => {
   return {
+    language: state.app.language,
     //hứng kết quả
-    listUsers: state.admin.users, //state.admin.users , admin là adminRedux lấy biến trong users ra, tức là giá trị nó lấy trong state redux của adminRedux
+    allDoctors: state.admin.allDoctors, //state.admin.users , admin là adminRedux lấy biến trong users ra, tức là giá trị nó lấy trong state redux của adminRedux
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchUserRedux: () => dispatch(actions.fetchAllUsersStart()), //fire action
-    deleteAUserRedux: (id) => dispatch(actions.deleteAUser(id)),
+    fetchAllDoctors: () => dispatch(actions.fetchAllDoctors()),
+    saveDetailDoctor: (data) => dispatch(actions.saveDetailDoctor(data)),
   };
 };
 

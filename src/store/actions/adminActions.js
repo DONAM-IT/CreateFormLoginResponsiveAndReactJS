@@ -6,6 +6,8 @@ import {
   deleteUserService,
   editUserService,
   getTopDoctorHomeService,
+  getAllDoctors,
+  saveDetailDoctorService,
 } from "../../services/userService";
 import { toast } from "react-toastify";
 //return 1 acction
@@ -235,6 +237,58 @@ export const fetchTopDoctor = () => {
       console.log("FETCH_TOP_DOCTORS_FAILDED: ", e);
       dispatch({
         type: actionTypes.FETCH_TOP_DOCTORS_FAILDED,
+      });
+    }
+  };
+};
+
+//mục tiêu fire action để get data
+export const fetchAllDoctors = () => {
+  return async (dispatch, getState) => {
+    try {
+      let res = await getAllDoctors();
+      // console.log("hoidanit channel check res: ", res);
+      // res trả ra biến data, nên ta sẽ lưu biến data này vào redux
+      if (res && res.errCode === 0) {
+        //dispatch là gửi action là object
+        dispatch({
+          type: actionTypes.FETCH_ALL_DOCTORS_SUCCESS, //FIRE ACTION
+          dataDr: res.data, //truyền dataDr
+        });
+      } else {
+        dispatch({
+          type: actionTypes.FETCH_ALL_DOCTORS_FAILDED,
+        });
+      }
+    } catch (e) {
+      console.log("FETCH_ALL_DOCTORS_FAILDED: ", e);
+      dispatch({
+        type: actionTypes.FETCH_ALL_DOCTORS_FAILDED,
+      });
+    }
+  };
+};
+
+export const saveDetailDoctor = (data) => {
+  return async (dispatch, getState) => {
+    try {
+      let res = await saveDetailDoctorService(data);
+      if (res && res.errCode === 0) {
+        toast.success("Save Infor Detail Doctor succeed!");
+        dispatch({
+          type: actionTypes.SAVE_DETAIL_DOCTOR_SUCCESS, //FIRE ACTION
+        });
+      } else {
+        toast.error("Save Infor Detail Doctor error!");
+        dispatch({
+          type: actionTypes.SAVE_DETAIL_DOCTOR_FAILDED,
+        });
+      }
+    } catch (e) {
+      toast.error("Save Infor Detail Doctor error!");
+      console.log("SAVE_DETAIL_DOCTOR_FAILDED: ", e);
+      dispatch({
+        type: actionTypes.SAVE_DETAIL_DOCTOR_FAILDED,
       });
     }
   };
