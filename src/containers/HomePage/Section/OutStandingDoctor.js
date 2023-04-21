@@ -4,10 +4,10 @@ import { FormattedMessage } from "react-intl";
 import Slider from "react-slick";
 import * as actions from "../../../store/actions";
 import { LANGUAGES } from "../../../utils";
+import { withRouter } from "react-router";
 
 class OutStandingDoctor extends Component {
   //để render động được cái danh sách người dùng, thì chúng ta cần phải đặt state, để kiểm soát được các biến thay đổi
-
   constructor(props) {
     super(props);
     this.state = {
@@ -27,7 +27,12 @@ class OutStandingDoctor extends Component {
     //gọi đến redux
     this.props.loadTopDoctors(); //tên truy cập gián tiếp đến actions
   }
-
+  handleViewDetailDoctor = (doctor) => {
+    // console.log("hoidanit channel view infor:", doctor);
+    if (this.props.history) {
+      this.props.history.push(`/detail-doctor/${doctor.id}`);
+    }
+  };
   render() {
     // console.log(
     //   "Hoidanit channel: check topDoctorRedux: ",
@@ -69,7 +74,11 @@ class OutStandingDoctor extends Component {
                   let nameVi = `${item.positionData.valueVi}, ${item.lastName} ${item.firstName} `;
                   let nameEn = `${item.positionData.valueEn}, ${item.firstName} ${item.lastName}`;
                   return (
-                    <div className="section-customize" key={index}>
+                    <div
+                      className="section-customize"
+                      key={index}
+                      onClick={() => this.handleViewDetailDoctor(item)}
+                    >
                       <div className="customize-border">
                         <div className="outer-bg">
                           <div
@@ -111,4 +120,6 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(OutStandingDoctor);
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(OutStandingDoctor)
+);

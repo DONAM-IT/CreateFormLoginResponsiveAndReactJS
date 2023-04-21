@@ -1,0 +1,34 @@
+.doctor-detail-container {
+    height: 500px;
+    margin: 0 100px;
+    border: 1px solid red;
+    .intro-doctor {
+        display: flex;
+        // height: 100px; bỏ chiều cao thằng cha thì mặc định thằng cha cao chính xác chiều cao của thằng con là 120px
+        border: 1px solid grey;
+        .content-left{
+            width: 20%;
+            // border: 1px solid green;
+            background: center center no-repeat;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 10px 20px;
+        }
+        .content-right{
+            width: 80%;
+            // border: 1px solid grey;
+            display: flex;
+            flex-direction: column;
+            padding-left: 10px;
+            .up{
+                padding-top: 15px;
+                font-size: 20px;
+                font-weight: 600;
+            }
+            .down{
+                padding-top: 10px;
+            }
+        }
+    }
+}
