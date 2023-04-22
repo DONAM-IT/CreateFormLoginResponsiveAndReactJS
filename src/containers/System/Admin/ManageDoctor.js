@@ -62,8 +62,25 @@ class ManageDoctor extends Component {
     //nếu ngôn ngữ thay đổi
     if (prevProps.language !== this.props.language) {
       let dataSelect = this.buildDataInputSelect(this.props.allDoctors);
+      let { selectedOption } = this.state;
+      if (dataSelect && dataSelect.length > 0) {
+        let foundDoctor = dataSelect.find(
+          (item) => item.value === selectedOption.value
+        );
+        if (foundDoctor) {
+          selectedOption = {
+            label: foundDoctor.label,
+            value: foundDoctor.value,
+          };
+        }
+        // else {
+        //   selectedOption = dataSelect[0];
+        // }
+      }
+
       this.setState({
         listDoctors: dataSelect,
+        selectedOption: selectedOption,
       });
     }
   }
@@ -138,9 +155,9 @@ class ManageDoctor extends Component {
           <div className="content-left form-group">
             <label>Chọn bác sĩ</label>
             <Select
-              value={this.state.selectedOption}
-              onChange={this.handleChangeSelect}
-              options={this.state.listDoctors}
+              value={this.state.selectedOption} //giá trị đầu vào, giá trị là current là cái bạn đang chọn hiện tại
+              onChange={this.handleChangeSelect} //hàm onChange để cho nó thấy những thay đổi
+              options={this.state.listDoctors} //là list danh sách mà các bạn cho người dùng chọn
             />
           </div>
           <div className="content-right">

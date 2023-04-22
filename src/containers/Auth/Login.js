@@ -68,6 +68,13 @@ class Login extends Component {
       isShowPassword: !this.state.isShowPassword,
     });
   };
+
+  handleKeyDown = (event) => {
+    // console.log("hoidanit channel check keydown: ", event);
+    if (event.key === "Enter" || event.keyCode === 13) {
+      this.handleLogin();
+    }
+  };
   render() {
     //JSX
     return (
@@ -95,6 +102,7 @@ class Login extends Component {
                   onChange={(event) => {
                     this.handleOnChangePassword(event);
                   }}
+                  onKeyDown={(event) => this.handleKeyDown(event)} //truyền cái event nó sẽ nghe được event của HTML
                 />
                 <span
                   onClick={() => {

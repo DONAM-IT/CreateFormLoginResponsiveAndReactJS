@@ -9,6 +9,7 @@ const initialState = {
   users: [],
   topDotors: [],
   allDoctors: [],
+  allScheduleTime: [], //đặt 1 cái biến cho thằng redux
 };
 
 const adminReducer = (state = initialState, action) => {
@@ -97,6 +98,16 @@ const adminReducer = (state = initialState, action) => {
         ...state,
       };
 
+    case actionTypes.FETCH_ALLCODE_SCHEDULE_TIME_SUCCESS:
+      state.allScheduleTime = action.dataTime;
+      return {
+        ...state,
+      };
+    case actionTypes.FETCH_ALLCODE_SCHEDULE_TIME_FAILDED:
+      state.allScheduleTime = [];
+      return {
+        ...state,
+      };
     default:
       return state;
   }

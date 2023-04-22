@@ -293,3 +293,29 @@ export const saveDetailDoctor = (data) => {
     }
   };
 };
+
+export const fetchAllScheduleTime = () => {
+  return async (dispatch, getState) => {
+    try {
+      let res = await getAllCodeService("TIME");
+      // console.log("hoidanit channel check res: ", res);
+      // res trả ra biến data, nên ta sẽ lưu biến data này vào redux
+      if (res && res.errCode === 0) {
+        //dispatch là gửi action là object
+        dispatch({
+          type: actionTypes.FETCH_ALLCODE_SCHEDULE_TIME_SUCCESS, //FIRE ACTION
+          dataTime: res.data, //truyền dataDr
+        });
+      } else {
+        dispatch({
+          type: actionTypes.FETCH_ALLCODE_SCHEDULE_TIME_FAILDED,
+        });
+      }
+    } catch (e) {
+      console.log("FETCH_ALLCODE_SCHEDULE_TIME_FAILDED: ", e);
+      dispatch({
+        type: actionTypes.FETCH_ALLCODE_SCHEDULE_TIME_FAILDED,
+      });
+    }
+  };
+};
