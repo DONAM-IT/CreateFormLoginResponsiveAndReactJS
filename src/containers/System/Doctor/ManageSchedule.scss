@@ -18,12 +18,19 @@
         gap: 20px;
         flex-wrap: wrap;
 
-        btn {
+        button {
             padding-top: 5px 15px;
             border: 1px solid grey
         }
     }
+
+    .btn-schedule {
+        &.active {
+        background-color: orange;
+    }
+    }
     .btn-save-schedule {
         margin-top: 20px;
+       
     }
 }

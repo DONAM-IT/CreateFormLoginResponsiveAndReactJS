@@ -4,9 +4,12 @@ import "./ManageSchedule.scss";
 import { FormattedMessage } from "react-intl";
 import Select from "react-select";
 import * as actions from "../../../store/actions";
-import { LANGUAGES, CRUD_ACTIONS } from "../../../utils";
+import { LANGUAGES, CRUD_ACTIONS, dateFormat } from "../../../utils";
 import DatePicker from "../../../components/Input/DatePicker";
 import moment from "moment";
+import Immutable from "immutable";
+import { toast } from "react-toastify";
+import _ from "lodash";
 
 class ManageSchedule extends Component {
   //cần viết hàm tạo(constructor) để lưu cái state
@@ -38,9 +41,41 @@ class ManageSchedule extends Component {
       });
     }
     //khi hiện tại và quá khứ khác nhau nghĩa là biết api trả về dữ liệu rồi khi này setState
+    /**
+     * Nếu bạn gặp lỗi "item.set is not a function" khi sử dụng `Immutable.js` trong đoạn mã đã cho, có thể là do phương thức `.set()` không hỗ trợ trực tiếp cho một mảng. 
+     * Thay vào đó, bạn có thể sử dụng `Immutable.fromJS()` để chuyển đổi mảng ban đầu thành một `Immutable.List`.
+      Sau đó, khi sử dụng `Immutable.js`, bạn có thể sử dụng phương thức `.setIn()` để thêm thuộc tính vào từng đối tượng trong mảng.
+     */
+
     if (prevProps.allScheduleTime !== this.props.allScheduleTime) {
+      //Cách 1
+      //Sử dụng Immutable.js, hãy sử dụng phương thức `size()`. CÒN sử dụng plain JS mảng thì bạn nên sử dụng thuộc tính `length`
+      // let data = Immutable.fromJS(this.props.allScheduleTime);
+      // console.log("data after before:", data.toJS());
+      // if (data && data.size > 0) {
+      //   data = data.map((item) => {
+      //     return item.setIn(["isSelected"], false);
+      //   });
+      // }
+      // console.log("data after mapping:", data.toJS());
+
+      //Cách 2
+      /**
+       * Cách thứ hai của bạn là cách khác để thiết lập thuộc tính `isSelected` vào mỗi đối tượng trong mảng `data`. 
+       * Cách này hoạt động bằng cách sử dụng spread syntax `...` để tạo ra một bản sao của mỗi đối tượng trong mảng. Sau đó, bạn thêm thuộc tính `isSelected` với giá trị mặc định `"false"` vào trong bản sao này 
+       * thông qua object destructuring.
+      Cách này cũng hoạt động và có thể sử dụng được nếu muốn. Tuy nhiên, nó không giải quyết vấn đề về immutable data một cách tốt nhất, và điều đó có thể dẫn đến các vấn đề về quản lý trạng thái và xử lý lỗi trong tương lai.
+      Vì vậy, nếu có nhu cầu làm việc với các bộ dữ liệu lớn hoặc cần quản lý trạng thái của ứng dụng phức tạp hơn, việc sử dụng một thư viện như `Immutable.js` để xử lý immutable data là rất cần thiết.
+       */
+      let data = this.props.allScheduleTime;
+      // console.log("data after before:", data);
+      if (data && data.length > 0) {
+        data = data.map((item) => ({ ...item, isSelected: false }));
+      }
+      // console.log("data after mapping:", data);
+
       this.setState({
-        rangeTime: this.props.allScheduleTime, //lưu được vào trong state cái biến rangeTime
+        rangeTime: data, //lưu được vào trong state cái biến rangeTime
       });
     }
     //nếu ngôn ngữ thay đổi
@@ -98,11 +133,134 @@ class ManageSchedule extends Component {
     // console.log('hoi dan it check date onchange', date);
   };
 
+  /** Shallow copy
+   * 
+   * Cách này Nếu bạn thay đổi trực tiếp mảng, điều đó có thể gây ảnh hưởng đến dữ liệu ban đầu. 
+   * Khi bạn thay đổi phần tử bên trong mảng, phần tử đó sẽ được thay đổi trực tiếp, có thể gây nên các bất ổn hoặc rủi ro trong việc sử dụng các phần tử đó tại những điểm khác nhau của chương trình.
+   * 
+   * handleClickBtnTime = (time) => {
+    let { rangeTime } = this.state;
+    console.log("hoi dan it check item click:rangeTime before ", rangeTime);
+
+    if (rangeTime && rangeTime.length > 0) {
+      rangeTime = rangeTime.map((item) => {
+        if (item.id === time.id) item.isSelected = !item.isSelected; //shallow copy là Khi bạn thay đổi thuộc tính của bản sao, thuộc tính của đối tượng gốc sẽ bị thay đổi theo.
+        return item;
+      });
+      console.log("hoi dan it channel: after ", rangeTime);
+      this.setState({
+        rangeTime: rangeTime,
+      });
+    }
+  }; khi click vào time thì giá trị biến isSelected before và after giống nhau là vì sao? cách khắc phục ?
+  
+  >>>> Vấn đề của bạn nằm ở chỗ bạn đang thay đổi thuộc tính `isSelected` của mảng `rangeTime` mà không tạo ra một bản sao mới của mảng. 
+   Vì vậy, `isSelected` của các đối tượng trong mảng `rangeTime` được thay đổi trực tiếp, không tạo ra một mảng mới.
+Việc này dẫn đến các giá trị `isSelected` trước và sau khi thay đổi đều giống nhau. 
+Để khắc phục điều này, thay vì thay đổi thuộc tính `isSelected` của đối tượng trong mảng `rangeTime`, 
+bạn nên tạo một bản sao mới của đối tượng và thêm thuộc tính `isSelected` vào đối tượng mới tạo này. 
+Sau đó, bạn cập nhật mảng `rangeTime` với đối tượng mới.
+Bằng cách tạo một bản sao mới của đối tượng và thêm thuộc tính `isSelected` vào trong đối tượng mới như ở ví dụ trên, khi bạn kiểm tra lại console.log, 
+bạn sẽ nhận được giá trị khác nhau giữa `rangeTime` trước khi thay đổi và `rangeTime` sau khi thay đổi.
+
+   */
+
+  // //CÁCH 1: Deep copy
+  // Tạo một bản sao mới của đối tượng và thêm thuộc tính `isSelected` vào đối tượng mới tạo này. Sau đó, bạn cập nhật mảng `rangeTime` với đối tượng mới.
+  handleClickBtnTime = (time) => {
+    let { rangeTime } = this.state;
+    console.log("hoi dan it check item click:rangeTime before ", rangeTime);
+
+    if (rangeTime && rangeTime.length > 0) {
+      rangeTime = rangeTime.map((item) => {
+        if (item.id === time.id) {
+          //! chỉ dùng với Boolean là true hay false
+          const newItem = { ...item, isSelected: !item.isSelected }; //Deep copy Khi bạn thay đổi thuộc tính của bản sao, đối tượng gốc sẽ không bị ảnh hưởng.
+          //Để deep copy một đối tượng, ta thường sử dụng các giải pháp có sẵn của JavaScript như JSON.parse(JSON.stringify()) hoặc implement thư viện hỗ trợ sao chép đối tượng như lodash hoặc immutable.js.
+          return newItem;
+        }
+        return item;
+      });
+      console.log("hoi dan it channel: after ", rangeTime);
+      this.setState({
+        rangeTime: rangeTime,
+      });
+    }
+  };
+
+  /** CÁCH 2: Deep copy
+   * Sử dụng `JSON.parse(JSON.stringify())` để copy mảng:
+   * Tuy nhiên, sử dụng `JSON.parse(JSON.stringify())` để copy mảng có thể gặp vấn đề trong một số trường hợp nhất định, như khi mảng chứa các đối tượng không thể được chuyển đổi sang JSON hoặc chứa các thuộc tính không có thể được sao chép. Bạn có thể sử dụng các thư viện hỗ trợ sao chép phức tạp hơn như Lodash hoặc Immutable.js để sao chép đối tượng.
+   * Bằng cách sao chép mảng sử dụng deep copy, bạn đảm bảo rằng các vấn đề liên quan đến tham chiếu của các đối tượng bên trong mảng sẽ được giải quyết một cách an toàn.
+   *
+   */
+  // handleClickBtnTime = (time) => {
+  //   let { rangeTime } = this.state;
+
+  //   // console.log("hoi dan it check item click:rangeTime before ", rangeTime);
+
+  //   if (rangeTime && rangeTime.length > 0) {
+  //     let newRangeTime = JSON.parse(JSON.stringify(rangeTime));
+  //     newRangeTime = newRangeTime.map((item) => {
+  //       if (item.id === time.id) {
+  //         item.isSelected = !item.isSelected;
+  //       }
+  //       return item;
+  //     });
+  //     // console.log("After newRangeTime", newRangeTime);
+  //     this.setState({
+  //       rangeTime: newRangeTime,
+  //     });
+  //   }
+  // };
+
+  handleSaveSchedule = () => {
+    let { rangeTime, selectedDoctor, currentDate } = this.state;
+    let result = [];
+    if (!currentDate) {
+      toast.error("Invalid date! ");
+      return;
+    }
+    //_.isEmpty(selectedDoctor) là true nếu selectedDoctor = {}
+    if (selectedDoctor && _.isEmpty(selectedDoctor)) {
+      toast.error("Invalid selected doctor! ");
+      return;
+    }
+
+    let formatedDate = moment(currentDate).format(dateFormat.SEND_TO_SERVER);
+    //chúng ta cần phải lọc các khoảng thời gian, sau đó build object
+    if (rangeTime && rangeTime.length > 0) {
+      let selectedTime = rangeTime.filter((item) => item.isSelected === true);
+      // console.log("hoidanit channel: selectedTime: ", selectedTime);
+      if (selectedTime && selectedTime.length > 0) {
+        //bên trong mỗi 1 lần lặp sẽ khởi tạo 1 biến object mới
+        selectedTime.map((schedule, index) => {
+          console.log("check schedule ", schedule, index, selectedDoctor);
+          let object = {};
+          object.doctorId = selectedDoctor.value; //thư viện select sẽ trả 1 object có 2 trường value: lable
+          object.date = formatedDate;
+          object.time = schedule.keyMap;
+          result.push(object); //đẩy vào 1 cái mảng
+        });
+      } else {
+        toast.error("Invalid selected time! ");
+        return;
+      }
+    }
+    console.log("hoi dan it channel check result: ", result);
+  };
   render() {
+    // console.log(
+    //   "hoi dan it channel: check range time in render",
+    //   this.props.allScheduleTime
+    // );
     // console.log("hoi dan it check state: ", this.state);
     // console.log("hoi dan it check props: ", this.props);
+
     let { rangeTime } = this.state; //lấy biến ra thông state và props
     let { language } = this.props;
+    // console.log("hoi dan it check state: ", rangeTime);
+
     return (
       <div className="manage-schedule-container">
         <div className="m-s-title">
@@ -140,14 +298,25 @@ class ManageSchedule extends Component {
                 rangeTime.length > 0 &&
                 rangeTime.map((item, index) => {
                   return (
-                    <button className="btn btn-schedule" key={index}>
+                    <button
+                      className={
+                        item.isSelected === true
+                          ? "btn btn-schedule active"
+                          : "btn btn-schedule"
+                      }
+                      key={index}
+                      onClick={() => this.handleClickBtnTime(item)}
+                    >
                       {language === LANGUAGES.VI ? item.valueVi : item.valueEn}
                     </button>
                   );
                 })}
             </div>
             <div className="col-12">
-              <button className="btn btn-primary btn-save-schedule">
+              <button
+                className="btn btn-primary btn-save-schedule"
+                onClick={() => this.handleSaveSchedule()}
+              >
                 <FormattedMessage id="manage-schedule.save" />
               </button>
             </div>
