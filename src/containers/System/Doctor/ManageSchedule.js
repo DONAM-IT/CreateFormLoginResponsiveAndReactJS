@@ -10,7 +10,7 @@ import moment from "moment";
 import Immutable from "immutable";
 import { toast } from "react-toastify";
 import _ from "lodash";
-
+import { saveBulkScheduleDoctor } from "../../../services/userService";
 class ManageSchedule extends Component {
   //cần viết hàm tạo(constructor) để lưu cái state
   constructor(props) {
@@ -214,7 +214,7 @@ bạn sẽ nhận được giá trị khác nhau giữa `rangeTime` trước khi
   //   }
   // };
 
-  handleSaveSchedule = () => {
+  handleSaveSchedule = async () => {
     let { rangeTime, selectedDoctor, currentDate } = this.state;
     let result = [];
     if (!currentDate) {
@@ -227,7 +227,9 @@ bạn sẽ nhận được giá trị khác nhau giữa `rangeTime` trước khi
       return;
     }
 
-    let formatedDate = moment(currentDate).format(dateFormat.SEND_TO_SERVER);
+    // let formatedDate = moment(currentDate).format(dateFormat.SEND_TO_SERVER); //hiện ra chữ
+    // let formatedDate = moment(currentDate).unix(); //gửi lên server dưới dạng timestamp
+    let formatedDate = new Date(currentDate).getTime();
     //chúng ta cần phải lọc các khoảng thời gian, sau đó build object
     if (rangeTime && rangeTime.length > 0) {
       let selectedTime = rangeTime.filter((item) => item.isSelected === true);
@@ -239,7 +241,7 @@ bạn sẽ nhận được giá trị khác nhau giữa `rangeTime` trước khi
           let object = {};
           object.doctorId = selectedDoctor.value; //thư viện select sẽ trả 1 object có 2 trường value: lable
           object.date = formatedDate;
-          object.time = schedule.keyMap;
+          object.timeType = schedule.keyMap; //timeType để map database khỏi sửa bên nodejs
           result.push(object); //đẩy vào 1 cái mảng
         });
       } else {
@@ -247,6 +249,27 @@ bạn sẽ nhận được giá trị khác nhau giữa `rangeTime` trước khi
         return;
       }
     }
+    // let res = await saveBulkScheduleDoctor(result);
+    //gửi lên server là 1 cái mảng
+    //  [
+    //    { doctorId: 6, date: "25/04/2023", time: "T1" },
+    //    { doctorId: 6, date: "25/04/2023", time: "T2" },
+    //    { doctorId: 6, date: "25/04/2023", time: "T3" },
+    //  ];
+
+    //build cục data gửi lên server 1 biến object có tên là arrSchedule và giá trị của nó chính là cái mảng của chúng ta
+    // {
+    //   arrSchedule: [
+    //     { doctorId: 6, date: "24/04/2023", time: "T1" },
+    //     { doctorId: 6, date: "24/04/2023", time: "T3" },
+    //   ];
+    // }
+    let res = await saveBulkScheduleDoctor({
+      arrSchedule: result,
+      doctorId: selectedDoctor.value,
+      formatedDate: formatedDate,
+    });
+    console.log("hoi dan it channel check res:saveBulkScheduleDoctor ", res);
     console.log("hoi dan it channel check result: ", result);
   };
   render() {
