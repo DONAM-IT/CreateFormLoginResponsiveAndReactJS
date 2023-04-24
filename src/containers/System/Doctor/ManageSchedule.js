@@ -229,7 +229,7 @@ bạn sẽ nhận được giá trị khác nhau giữa `rangeTime` trước khi
 
     // let formatedDate = moment(currentDate).format(dateFormat.SEND_TO_SERVER); //hiện ra chữ
     // let formatedDate = moment(currentDate).unix(); //gửi lên server dưới dạng timestamp
-    let formatedDate = new Date(currentDate).getTime();
+    let formatedDate = new Date(currentDate).getTime(); //hàm này trả ra 1 số nguyên là
     //chúng ta cần phải lọc các khoảng thời gian, sau đó build object
     if (rangeTime && rangeTime.length > 0) {
       let selectedTime = rangeTime.filter((item) => item.isSelected === true);

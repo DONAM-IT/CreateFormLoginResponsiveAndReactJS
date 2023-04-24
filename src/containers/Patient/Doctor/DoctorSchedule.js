@@ -5,12 +5,14 @@ import localization from "moment/locale/vi";
 import moment from "moment";
 import { LANGUAGES } from "../../../utils";
 import { getScheduleDoctorByDate } from "../../../services/userService";
+import _ from "lodash";
 
 class DoctorSchedule extends Component {
   constructor(props) {
     super(props);
     this.state = {
       allDays: [],
+      allAvalabelTime: [],
     };
   }
 
@@ -25,12 +27,21 @@ class DoctorSchedule extends Component {
     );
     this.setArrDays(language);
   }
+
+  capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
   setArrDays = (language) => {
     let allDays = [];
     for (let i = 0; i < 7; i++) {
       let object = {};
       if (language === LANGUAGES.VI) {
-        object.label = moment(new Date()).add(i, "days").format("dddd - DD/MM");
+        let labeVi = moment(new Date()).add(i, "days").format("dddd - DD/MM");
+        object.label = this.capitalizeFirstLetter(labeVi);
+
+        // object.label = _.capitalize(
+        //   moment(new Date()).add(i, "days").format("dddd - DD/MM")
+        // );
       } else {
         object.label = moment(new Date())
           .add(i, "days")
@@ -57,11 +68,17 @@ class DoctorSchedule extends Component {
   }
 
   handleOnChangeSelect = async (event) => {
-    console.log("check id: ", this.props.detailDoctor);
+    // console.log("check id: ", this.props.detailDoctor);
     if (this.props.doctorIdFromParent && this.props.doctorIdFromParent !== -1) {
       let doctorId = this.props.doctorIdFromParent;
       let date = event.target.value;
       let res = await getScheduleDoctorByDate(doctorId, date);
+
+      if (res && res.errCode === 0) {
+        this.setState({
+          allAvalabelTime: res.data ? res.data : [],
+        });
+      }
       console.log("check res schedule from react: ", res);
     }
     // console.log("event onchange date value: ", event.target.value);
@@ -72,7 +89,8 @@ class DoctorSchedule extends Component {
     //   { label: "Thứ 3", value: "3" },
     //   { label: "Thứ 4", value: "4" },
     // ];
-    let { allDays } = this.state;
+    let { allDays, allAvalabelTime } = this.state; //lấy state ra xài
+    let { language } = this.props;
     return (
       <div className="doctor-schedule-container">
         <div className="all-schedule">
@@ -88,7 +106,32 @@ class DoctorSchedule extends Component {
               })}
           </select>
         </div>
-        <div className="all-availabe-time"></div>
+        <div className="all-availabe-time">
+          <div className="text-calendar">
+            {/* //i viết tắt icon <span> hiển thị text ít nên dùng */}
+
+            <i className="fas fa-calendar-alt">
+              <span>Lịch khám</span>
+            </i>
+          </div>
+          <div className="time-content">
+            {allAvalabelTime && allAvalabelTime.length > 0 ? (
+              allAvalabelTime.map((item, index) => {
+                let timeDisplay =
+                  language === LANGUAGES.VI
+                    ? item.timeTypeData.valueVi
+                    : item.timeTypeData.valueEn;
+                // let timeTypeData
+                return <button key={index}>{timeDisplay}</button>;
+              })
+            ) : (
+              <div>
+                Không có lịch hẹn trong thời gian này, vui lòng chọn thời gian
+                khác!
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     );
   }
