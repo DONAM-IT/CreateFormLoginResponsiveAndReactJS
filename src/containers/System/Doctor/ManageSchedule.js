@@ -314,6 +314,7 @@ bạn sẽ nhận được giá trị khác nhau giữa `rangeTime` trước khi
                 value={this.state.currentDate}
                 // minDate={this.state.now}
                 minDate={new Date()}
+                language={this.props.language}
               />
             </div>
             <div className="col-12 pick-hour-container">

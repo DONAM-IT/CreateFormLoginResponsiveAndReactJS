@@ -1,14 +1,15 @@
 .doctor-detail-container {
     height: 500px;
-    
-   
+
+
     // border: 1px solid red;
     .intro-doctor {
         display: flex;
         // height: 100px; bỏ chiều cao thằng cha thì mặc định thằng cha cao chính xác chiều cao của thằng con là 120px
         // border: 1px solid grey;
         margin: 0 100px;
-        .content-left{
+
+        .content-left {
             width: 20%;
             // border: 1px solid green;
             background: center center no-repeat;
@@ -17,20 +18,38 @@
             border-radius: 50%;
             margin: 10px 20px;
         }
-        .content-right{
+
+        .content-right {
             width: 80%;
             // border: 1px solid grey;
             display: flex;
             flex-direction: column;
             padding-left: 10px;
-            .up{
+
+            .up {
                 padding-top: 15px;
                 font-size: 20px;
                 font-weight: 600;
             }
-            .down{
+
+            .down {
                 padding-top: 10px;
             }
+        }
+    }
+
+    .schedule-doctor {
+        margin: 0 100px;
+        display: flex;
+        height: 200px;
+        border: 1px solid red;
+
+        .content-left {
+            width: 50%;
+        }
+
+        .content-right {
+            width: 50%;
         }
     }
 
@@ -43,16 +62,18 @@
         // padding-right: 100px;
         padding: 10px 100px;
         background-color: #f9f9f9;
-        
+
 
         h2 {
             font-size: 17px;
         }
+
         img {
             width: 100%;
         }
 
     }
+
     .comment-doctor {
         height: 50px;
     }
