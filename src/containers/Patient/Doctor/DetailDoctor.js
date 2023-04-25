@@ -11,6 +11,7 @@ class DetailDoctor extends Component {
     super(props);
     this.state = {
       detailDoctor: {},
+      currentDoctorId: -1,
     };
   }
   //khi component được render
@@ -21,6 +22,9 @@ class DetailDoctor extends Component {
       this.props.match.params.id
     ) {
       let id = this.props.match.params.id;
+      this.setState({
+        currentDoctorId: id,
+      });
       //không viết redux nên gọi api trực tiếp và setState
       let res = await getDetailInforDoctor(id);
       if (res && res.errCode === 0) {
@@ -33,7 +37,10 @@ class DetailDoctor extends Component {
   }
 
   //cần có componentDidUpdate để biết khi nào props thay đổi
-  componentDidUpdate(prevProps, prevState, snapshot) {}
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    
+
+  }
   render() {
     // console.log(this.props.match.params.id);
     console.log("hoi dan it channel: state", this.state);
@@ -75,11 +82,7 @@ class DetailDoctor extends Component {
           </div>
           <div className="schedule-doctor">
             <div className="content-left">
-              <DoctorSchedule
-                doctorIdFromParent={
-                  detailDoctor && detailDoctor.id ? detailDoctor.id : -1
-                }
-              />
+              <DoctorSchedule doctorIdFromParent={this.state.currentDoctorId} />
             </div>
             <div className="content-right"></div>
           </div>

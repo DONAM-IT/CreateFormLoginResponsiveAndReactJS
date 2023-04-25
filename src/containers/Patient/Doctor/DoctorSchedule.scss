@@ -1,16 +1,16 @@
 .doctor-schedule-container {
-    border-right: 1px solid green;
+    border-right: 1px solid #ddd;
     height: 100%; //thằng cha truyền xuống có bao nhiêu thì nó sẽ có như vậy
 
     .all-schedule {
         select {
-          border: none;
-          border-bottom: 1px solid #ddd;
-          outline: none;
-          cursor: pointer;
-          padding: 10px 0;
-          color: #337ab7;
-          font-weight: 600;
+            border: none;
+            border-bottom: 1px solid #ddd;
+            outline: none;
+            cursor: pointer;
+            padding: 10px 0;
+            color: #337ab7;
+            font-weight: 600;
         }
 
         option {
@@ -30,23 +30,44 @@
         }
 
         .time-content {
-            display: flex;
-            gap: 15px; //mỗi 1 nút bấm cách nhau khoảng 15px
-            flex-wrap: wrap; //không đủ không gian tự động xuống dòng
 
-            button {
-                padding: 8px 10px;
-                border: none;
-                outline: none;
-                background-color: #fff04b;
-                min-width: 120px;
-                border-radius: 3px;
-                font-weight: 600;
-                color: #333;
-                &:hover {
-                    background-color: #45c3d2;
-                    color: white;
+            .time-content-btns {
+                display: flex;
+                gap: 15px; //mỗi 1 nút bấm cách nhau khoảng 15px
+                flex-wrap: wrap; //không đủ không gian tự động xuống dòng
+
+                button {
+                    padding: 8px 10px;
+                    border: none;
+                    outline: none;
+                    background-color: #fff04b;
+
+                    border-radius: 3px;
+                    font-weight: 600;
+                    color: #333;
+
+                    &:hover {
+                        background-color: #45c3d2;
+                        color: white;
+                    }
                 }
+
+                .btn-vie {
+                    min-width: 133px;
+                }
+
+                .btn-en {
+                    min-width: 170px;
+                }
+
+                .no-schedule {
+                    font-style: italic;
+                    font-size: 14px;
+                }
+            }
+
+            .book-free {
+                margin-top: 10px;
             }
         }
     }

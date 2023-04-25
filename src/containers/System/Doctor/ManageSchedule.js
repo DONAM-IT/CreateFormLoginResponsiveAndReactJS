@@ -269,8 +269,15 @@ bạn sẽ nhận được giá trị khác nhau giữa `rangeTime` trước khi
       doctorId: selectedDoctor.value,
       formatedDate: formatedDate,
     });
-    console.log("hoi dan it channel check res:saveBulkScheduleDoctor ", res);
-    console.log("hoi dan it channel check result: ", result);
+
+    if (res && res.errCode === 0) {
+      toast.success("Save Infor succeed!");
+    } else {
+      toast.error("error saveBulkScheduleDoctor!");
+      console.log("error saveBulkScheduleDoctor >>> res: ", res);
+    }
+    // console.log("hoi dan it channel check res:saveBulkScheduleDoctor ", res);
+    // console.log("hoi dan it channel check result: ", result);
   };
   render() {
     // console.log(
@@ -282,6 +289,7 @@ bạn sẽ nhận được giá trị khác nhau giữa `rangeTime` trước khi
 
     let { rangeTime } = this.state; //lấy biến ra thông state và props
     let { language } = this.props;
+    // let yesterday = new Date(new Date().setDate(new Date().getDate() - 1));
     // console.log("hoi dan it check state: ", rangeTime);
 
     return (
@@ -312,8 +320,8 @@ bạn sẽ nhận được giá trị khác nhau giữa `rangeTime` trước khi
                 onChange={this.handleOnchangeDatePicker}
                 className="form-control"
                 value={this.state.currentDate}
-                // minDate={this.state.now}
-                minDate={new Date()}
+                minDate={new Date().setHours(0, 0, 0, 0)}
+                // minDate={yesterday}
                 language={this.props.language}
               />
             </div>
