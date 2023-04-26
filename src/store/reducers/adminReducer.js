@@ -10,6 +10,8 @@ const initialState = {
   topDotors: [],
   allDoctors: [],
   allScheduleTime: [], //đặt 1 cái biến cho thằng redux
+
+  allRequiredDoctorInfor: [],
 };
 
 const adminReducer = (state = initialState, action) => {
@@ -108,6 +110,22 @@ const adminReducer = (state = initialState, action) => {
       return {
         ...state,
       };
+
+    case actionTypes.FETCH_REQUIRED_DOCTOR_INFOR_SUCCESS:
+      state.allRequiredDoctorInfor = action.data;
+      // console.log(
+      //   ">>> hoi dan it channel: fetch requied doctor data action: ",
+      //   action
+      // );
+      return {
+        ...state,
+      };
+    case actionTypes.FETCH_REQUIRED_DOCTOR_INFOR_FAIDED:
+      state.allRequiredDoctorInfor = [];
+      return {
+        ...state,
+      };
+
     default:
       return state;
   }
