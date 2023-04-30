@@ -208,18 +208,67 @@ class ManageDoctor extends Component {
     });
     // console.log("hoidanit check status", this.state);
   };
+
+  //chỉ lấy thông tin của bác sĩ khi và chỉ khi chúng ta onChange cái dropdown mà chọn bác sĩ
   handleChangeSelect = async (selectedOption) => {
     this.setState({ selectedOption });
+
+    let { listPayment, listProvince, listPrice } = this.state;
 
     // console.log(`Option selected:`, selectedOption);
     let res = await getDetailInforDoctor(selectedOption.value);
     if (res && res.errCode === 0 && res.data && res.data.Markdown) {
       let markdown = res.data.Markdown;
+
+      let addressClinic = "",
+        nameClinic = "",
+        note = "",
+        paymentId = "",
+        priceId = "",
+        provinceId = "",
+        selectedPayment = "",
+        selectedPrice = "",
+        selectedProvince = "";
+
+      if (res.data.Doctor_infor) {
+        addressClinic = res.data.Doctor_infor.addressClinic;
+        nameClinic = res.data.Doctor_infor.nameClinic;
+        note = res.data.Doctor_infor.note;
+
+        paymentId = res.data.Doctor_infor.paymentId;
+        priceId = res.data.Doctor_infor.priceId;
+        provinceId = res.data.Doctor_infor.provinceId;
+
+        //tìm 1 phần tử find là hàm của js, nếu tìm ra thì trả 1 object còn ko thì trả là undefine
+        selectedPayment = listPayment.find((item) => {
+          return item && item.value === paymentId; //trả về 1 object với điều kiện item.value === paymentId
+        });
+        selectedPrice = listPrice.find((item) => {
+          return item && item.value === priceId; //trả về 1 object với điều kiện item.value === paymentId
+        });
+        selectedProvince = listProvince.find((item) => {
+          return item && item.value === provinceId; //trả về 1 object với điều kiện item.value === paymentId
+        });
+
+        // console.log(
+        //   "check hoi dan it find array",
+        //   selectedPayment,
+        //   listPayment,
+        //   paymentId
+        // );
+      }
+
       this.setState({
         contentHTML: markdown.contentHTML,
         contentMarkdown: markdown.contentMarkdown,
         description: markdown.description,
         hasOldData: true,
+        addressClinic: addressClinic,
+        nameClinic: nameClinic,
+        note: note,
+        selectedPayment: selectedPayment,
+        selectedPrice: selectedPrice,
+        selectedProvince: selectedProvince,
       });
     } else {
       this.setState({
@@ -227,6 +276,9 @@ class ManageDoctor extends Component {
         contentMarkdown: "",
         description: "",
         hasOldData: false,
+        addressClinic: "",
+        nameClinic: "",
+        note: "",
       });
     }
     // console.log("hoi dan it channel:", res);
