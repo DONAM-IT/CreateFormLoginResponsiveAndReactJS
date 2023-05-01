@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { FormattedMessage } from "react-intl";
+import { LANGUAGES } from "../../../utils";
 
 class DefaultClass extends Component {
   constructor(props) {
