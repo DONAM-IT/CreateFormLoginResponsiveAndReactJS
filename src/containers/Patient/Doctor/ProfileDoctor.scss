@@ -4,7 +4,10 @@
 
 
         .content-left {
-            background: center center no-repeat;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+
             width: 80px;
             height: 80px;
             border-radius: 50%;
@@ -21,8 +24,8 @@
                 font-weight: 600;
             }
 
-            .down { 
-                text-align:  justify; //tự động căn đều 2 bên trái phải
+            .down {
+                text-align: justify; //tự động căn đều 2 bên trái phải
             }
         }
     }
