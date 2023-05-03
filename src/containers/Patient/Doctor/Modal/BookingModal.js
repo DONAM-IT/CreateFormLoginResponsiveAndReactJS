@@ -4,19 +4,20 @@ import { FormattedMessage } from "react-intl";
 import "./BookingModal.scss";
 import { Modal } from "reactstrap";
 import ProfileDoctor from "../ProfileDoctor";
-import _, { times } from "lodash";
+import _ from "lodash";
 import DatePicker from "../../../../components/Input/DatePicker";
 import * as actions from "../../../../store/actions";
 import { LANGUAGES } from "../../../../utils";
 import Select from "react-select";
 import { postPatientBookAppointment } from "../../../../services/userService";
 import { toast } from "react-toastify";
+import moment from "moment";
 
 class BookingModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      fullname: "",
+      fullName: "",
       phoneNumber: "",
       email: "",
       address: "",
@@ -89,7 +90,45 @@ class BookingModal extends Component {
       birthday: date[0], // cái hàm nhả về cái array chúng ta lấy phần tử đầu tiên trong cái mảng
     });
   };
+  capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
 
+  buildTimeBooking = (dataTime) => {
+    let { language } = this.props;
+    if (dataTime && !_.isEmpty(dataTime)) {
+      let time = LANGUAGES.VI
+        ? dataTime.timeTypeData.valueVi
+        : dataTime.timeTypeData.valueEn;
+
+      let date =
+        language === LANGUAGES.VI
+          ? this.capitalizeFirstLetter(
+              moment.unix(+dataTime.date / 1000).format("dddd - DD/MM/YYYY")
+            )
+          : this.capitalizeFirstLetter(
+              moment
+                .unix(+dataTime.date / 1000)
+                .locale("en")
+                .format("ddd - MM/DD/YYYY")
+            );
+      return `${time} - ${date}`;
+    }
+    return "";
+  };
+
+  buildDoctorName = (dataTime) => {
+    let { language } = this.props;
+    if (dataTime && !_.isEmpty(dataTime)) {
+      let name =
+        language === LANGUAGES.VI
+          ? `${dataTime.doctorData.lastName} ${dataTime.doctorData.firstName}`
+          : `${dataTime.doctorData.firstName} ${dataTime.doctorData.lastName}`;
+
+      return name;
+    }
+    return "";
+  };
   handleChangeSelect = (selectedOption) => {
     this.setState({ selectedGender: selectedOption });
   };
@@ -98,8 +137,11 @@ class BookingModal extends Component {
     //validate input
     // !data.email || !data.doctorId || !data.timeType || !data.date;
     let date = new Date(this.state.birthday).getTime(); //covert chuỗi String sang dạng timestamp unix
+    let timeString = this.buildTimeBooking(this.props.dataTime);
+    let doctorName = this.buildDoctorName(this.props.dataTime);
+
     let res = await postPatientBookAppointment({
-      fullname: this.state.fullname,
+      fullName: this.state.fullName,
       phoneNumber: this.state.phoneNumber,
       email: this.state.email,
       address: this.state.address,
@@ -108,6 +150,9 @@ class BookingModal extends Component {
       selectedGender: this.state.selectedGender.value, //selectedGender là 1 object có value và babel
       doctorId: this.state.doctorId,
       timeType: this.state.timeType,
+      language: this.props.language,
+      timeString: timeString,
+      doctorName: doctorName,
     });
 
     if (res && res.errCode === 0) {
@@ -130,12 +175,15 @@ class BookingModal extends Component {
     //cách viết 2 ngắn
     let doctorId = dataTime && !_.isEmpty(dataTime) ? dataTime.doctorId : "";
 
+    // console.log("hoi dan it channel check dataTime: ", dataTime);
+
     // console.log("data props from modal: ", this.props);
 
-    console.log(
-      "hoidan it channel: check state inside booking modal ",
-      this.state
-    );
+    // console.log(
+    //   "hoidan it channel: check state inside booking modal ",
+    //   this.state
+    // );
+
     return (
       <Modal
         isOpen={isOpenModal}
