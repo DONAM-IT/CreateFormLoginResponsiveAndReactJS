@@ -5,6 +5,8 @@ export const path = {
   LOG_OUT: "/logout",
   SYSTEM: "/system",
   DETAIL_DOCTOR: "/detail-doctor/:id",
+  //http://localhost:3000/verify-booking?token=eb96cae9-62aa-46a6-83a5-b02eff158bf3&doctorId=1
+  VERIFY_EMAIL_BOOKING: "/verify-booking",
 };
 
 export const LANGUAGES = {
