@@ -7,6 +7,7 @@ import { LANGUAGES } from "../../../utils";
 import NumberFormat from "react-number-format";
 import _ from "lodash";
 import moment from "moment";
+import { Link } from "react-router-dom"
 
 class ProfileDoctor extends Component {
   constructor(props) {
@@ -35,8 +36,13 @@ class ProfileDoctor extends Component {
   async componentDidUpdate(prevProps, prevState, snapshot) {
     if (this.props.language !== prevProps.language) {
     }
+    //khi bạn change location, list danh sách doctorId thay đổi 
+    //=> phải update lại hiển thị cho component ProfileDoctor.js
     if (this.props.doctorId !== prevProps.doctorId) {
-      // this.getInforDoctor(this.props.doctorId);
+      let data = await this.getInforDoctor(this.props.doctorId);
+      this.setState({
+        dataProfile: data,
+      });
     }
   }
   capitalizeFirstLetter(string) {
@@ -79,7 +85,8 @@ class ProfileDoctor extends Component {
   render() {
     // let dataProfile = this.state.dataProfile;
     let { dataProfile } = this.state;
-    let { language, isShowDescriptionDoctor, dataTime } = this.props;
+    let { language, isShowDescriptionDoctor, dataTime, isShowLinkDetail, isShowPrice, doctorId } = this.props;
+      
     let nameVi = "",
       nameEn = "";
     if (dataProfile && dataProfile.positionData) {
@@ -118,6 +125,13 @@ class ProfileDoctor extends Component {
             </div>
           </div>
         </div>
+
+        {isShowLinkDetail === true && <div className="view-detail-doctor">
+          <Link to={`/detail-doctor/${doctorId}`}>Xem thêm</Link>
+          {/* <a href={`/detail-doctor/${doctorId}`}>Xem thêm</a> */} 
+        </div>}
+
+        {isShowPrice === true && 
         <div className="price">
           <FormattedMessage id="patient.booking-modal.price" />
           {dataProfile &&
@@ -142,7 +156,8 @@ class ProfileDoctor extends Component {
                 suffix={"$"}
               />
             )}
-        </div>
+          </div>
+        }
       </div>
     );
   }
