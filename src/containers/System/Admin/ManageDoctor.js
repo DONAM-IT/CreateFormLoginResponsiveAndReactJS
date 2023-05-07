@@ -41,7 +41,7 @@ class ManageDoctor extends Component {
       selectedPayment: "",
       selectedProvince: "",
       selectedClinic: "",
-      selectedSecialty: "",
+      selectedSpecialty: "",
       nameClinic: "",
       addressClinic: "",
       note: "",
@@ -232,7 +232,7 @@ class ManageDoctor extends Component {
         this.state.selectedClinic && this.state.selectedClinic.value
           ? this.state.selectedClinic.value
           : "",
-      specialtyId: this.state.selectedSecialty.value,
+      specialtyId: this.state.selectedSpecialty.value,
     });
     // console.log("hoidanit check status", this.state);
   };
@@ -241,7 +241,7 @@ class ManageDoctor extends Component {
   handleChangeSelect = async (selectedOption) => {
     this.setState({ selectedOption });
 
-    let { listPayment, listProvince, listPrice } = this.state;
+    let { listPayment, listProvince, listPrice, listSpecialty } = this.state;
 
     // console.log(`Option selected:`, selectedOption);
     let res = await getDetailInforDoctor(selectedOption.value);
@@ -254,9 +254,11 @@ class ManageDoctor extends Component {
         paymentId = "",
         priceId = "",
         provinceId = "",
+        specialtyId = "",
         selectedPayment = "",
         selectedPrice = "",
-        selectedProvince = "";
+        selectedProvince = "",
+        selectedSpecialty = "";
 
       if (res.data.Doctor_infor) {
         addressClinic = res.data.Doctor_infor.addressClinic;
@@ -266,6 +268,7 @@ class ManageDoctor extends Component {
         paymentId = res.data.Doctor_infor.paymentId;
         priceId = res.data.Doctor_infor.priceId;
         provinceId = res.data.Doctor_infor.provinceId;
+        specialtyId = res.data.Doctor_infor.specialtyId;
 
         //tìm 1 phần tử find là hàm của js, nếu tìm ra thì trả 1 object còn ko thì trả là undefine
         selectedPayment = listPayment.find((item) => {
@@ -276,6 +279,10 @@ class ManageDoctor extends Component {
         });
         selectedProvince = listProvince.find((item) => {
           return item && item.value === provinceId; //trả về 1 object với điều kiện item.value === paymentId
+        });
+
+        selectedSpecialty = listSpecialty.find((item) => {
+          return item && item.value === specialtyId;
         });
 
         // console.log(
@@ -297,6 +304,7 @@ class ManageDoctor extends Component {
         selectedPayment: selectedPayment,
         selectedPrice: selectedPrice,
         selectedProvince: selectedProvince,
+        selectedSpecialty: selectedSpecialty,
       });
     } else {
       this.setState({
@@ -307,6 +315,10 @@ class ManageDoctor extends Component {
         addressClinic: "",
         nameClinic: "",
         note: "",
+        selectedPayment: "",
+        selectedPrice: "",
+        selectedProvince: "",
+        selectedSpecialty: "",
       });
     }
     // console.log("hoi dan it channel:", res);
@@ -505,13 +517,13 @@ Giá trị của `value` được thiết lập bằng state `selectedPrice`, đ
               <FormattedMessage id="admin.manage-doctor.speciality" />
             </label>
             <Select
-              value={this.state.selectedSecialty} //giá trị đầu vào, giá trị là current là cái bạn đang chọn hiện tại
+              value={this.state.selectedSpecialty} //giá trị đầu vào, giá trị là current là cái bạn đang chọn hiện tại
               options={this.state.listSpecialty} //là list danh sách mà các bạn cho người dùng chọn
               placeholder={
                 <FormattedMessage id="admin.manage-doctor.speciality" />
               }
               onChange={this.handleChangeSelectDoctorInfor}
-              name="selectedSecialty"
+              name="selectedSpecialty"
             />
           </div>
           <div className="col-4 form-group">
